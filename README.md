@@ -1,84 +1,130 @@
-RTL8188FU driver for Linux kernel 4.15.x ~ 5.18.x (Linux Mint, Ubuntu or Debian Derivatives)
+# Realtek RTL8188FU Driver
 
-------------------
+Unofficial drivers for RTL8188FU (WiFi dongle) for Linux kernel 4.15.x and newer.
 
-## How to install
+**It is forked from kelebek333's RTL8188FU repository after it failed to compile on newer versions of Linux (>5.19.2).**
 
-`sudo apt-get install build-essential git dkms linux-headers-$(uname -r)`
+**ARM devices are not supported because I don't have one any.**
 
-`git clone https://github.com/kelebek333/rtl8188fu`
+## Support
+No support will be provided for other Linux distributions other than Arch Linux (I'm currently running on) and Debian (including derivatives).
 
-`sudo dkms add ./rtl8188fu`
+## Installation
 
-`sudo dkms build rtl8188fu/1.0`
+- Install required packages.
 
-`sudo dkms install rtl8188fu/1.0`
+    *Make sure you know or read these packages on your package distribution page because you don't want
+    to trust random people on the Internet...*
 
-`sudo cp ./rtl8188fu/firmware/rtl8188fufw.bin /lib/firmware/rtlwifi/`
+    ### Arch Linux
+    ```sh
+    sudo pacman -S git base-devel linux-headers dkms
+    ```
 
-------------------
+    ### Debian
+
+    ```sh
+    sudo apt-get install build-essential git dkms linux-headers-$(uname -r)
+    ```
+
+- Clone (Like downloading the source code) the repository using git
+
+    ```sh
+    git clone https://github.com/memothelemo/rtl8188fu
+    ```
+
+- Add this driver to dkms
+
+    ```sh
+    sudo dkms add ./rtl8188fu
+    ```
+
+- Tell DKMS to compile that driver based on this directory we've cloned from git command.
+
+    ```sh
+    sudo dkms build rtl8188fu/1.0
+    ```
+
+- Install the driver after it compiles successfully
+    ```sh
+    sudo dkms install rtl8188fu/1.0
+    ```
+
+## Uninstallation
+
+```sh
+## Removes rtl8188fu from dkms modules list
+sudo dkms remove rtl8188fu/1.0 --all
+
+## Removes RTL8188FU configuration
+sudo rm -f /etc/modprobe.d/rtl8188fu.conf
+```
+
+<!-- - Clone the binary 
+`sudo cp ./rtl8188fu/firmware/rtl8188fufw.bin /lib/firmware/rtlwifi/` -->
 
 ## Configuration
 
-#### Disable Power Management
+<details>
+<summary>My patches</summary>
+
+I use RTL188FU and experienced issues upon installing from 
+kelebek's forked driver natively.
+
+I applied some patches in order to make this WiFi dongle work most of the time.
+
+```sh
+## Please read the contents of ./post-install.sh before running it!
+## sudo is not neccessary if you're running on root
+sudo bash ./post-install.sh
+```
+
+</details>
+
+<details>
+<summary>Disable Power Management</summary>
 
 Run following commands for disable power management and plugging/replugging issues.
 
-`sudo mkdir -p /etc/modprobe.d/`
+```sh
+## Creates modprobe.d in /etc directory where we can keep our configurations in
+sudo mkdir -p /etc/modprobe.d
 
-`sudo touch /etc/modprobe.d/rtl8188fu.conf`
+## Creates rtl8188fu.conf file inside modprobe.d folder we created
+sudo touch /etc/modprobe.d/rtl8188fu.conf
 
-`echo "options rtl8188fu rtw_power_mgnt=0 rtw_enusbss=0" | sudo tee /etc/modprobe.d/rtl8188fu.conf`
+## Prints the text in the terminal and saves the output we show in terminal using tee
+echo "options rtl8188fu rtw_power_mgnt=0 rtw_enusbss=0" | sudo tee /etc/modprobe.d/rtl8188fu.conf
+```
 
-#### Disable MAC Address Spoofing
+</details>
 
-Run following commands for disabling MAC Address Spoofing (Note: This is not needed on Ubuntu based distributions. MAC Address Spoofing is already disable on Ubuntu base).
+<details>
+<summary>Disable MAC Address Spoofing</summary>
 
-`sudo mkdir -p /etc/NetworkManager/conf.d/`
+*Not neccessary if you're not running this on Ubuntu distributions and its derivates*
 
-`sudo touch /etc/NetworkManager/conf.d/disable-random-mac.conf`
+```sh
+## Creates NetworkManager configuration file
+sudo mkdir -p /etc/NetworkManager/conf.d
 
-`echo -e "[device]\nwifi.scan-rand-mac-address=no" | sudo tee /etc/NetworkManager/conf.d/disable-random-mac.conf`
+## Creates disable-random-mac.conf file to know NetworkManager we're
+## going to disable MAC Address Spoofing
+sudo touch /etc/NetworkManager/conf.d/disable-random-mac.conf
 
-#### Blacklist for kernel 5.15 and 5.16 (No needed for kernel 5.17 and up)
+## Prints the text in the terminal and saves the output we show in terminal using tee
+echo -e "[device]\nwifi.scan-rand-mac-address=no" | sudo tee /etc/NetworkManager/conf.d/disable-random-mac.conf
+```
+
+</details>
+
+<details>
+<summary>Blacklist for kernel 5.15 and 5.16 (No needed for kernel 5.17 and up)</summary>
 
 If you are using kernel 5.15 and 5.16, you must create a configuration file with following commands for preventing to conflict rtl8188fu module with built-in r8188eu module.
 
-`echo 'alias usb:v0BDApF179d*dc*dsc*dp*icFFiscFFipFFin* rtl8188fu' | sudo tee /etc/modprobe.d/r8188eu-blacklist.conf`
+```sh
+echo 'alias usb:v0BDApF179d*dc*dsc*dp*icFFiscFFipFFin* rtl8188fu' | sudo tee /etc/modprobe.d/r8188eu-blacklist.conf
+```
 
-
-------------------
-
-## How to uninstall
-
-`sudo dkms remove rtl8188fu/1.0 --all`
-
-`sudo rm -f /lib/firmware/rtlwifi/rtl8188fufw.bin`
-
-`sudo rm -f /etc/modprobe.d/rtl8188fu.conf`
-
-
-------------------
-
-## How to install from PPA repository
-
-You can install rtl8188fu driver with following commands from PPA.
-
-for xUbuntu 16.04-18.04-20.04-21.10 / Linux Mint 18.x-19.x-20.x
-
-`sudo add-apt-repository ppa:kelebek333/kablosuz`
-
-`sudo apt-get update`
-
-`sudo apt install rtl8188fu-dkms`
-
-
-You can purge packages with following commands
-
-`sudo apt purge rtl8188fu-dkms`
-
-------------------
-
-## How to install (for ARM devices)
-
-https://github.com/kelebek333/rtl8188fu/tree/arm#how-to-install-for-arm-devices
+</details>

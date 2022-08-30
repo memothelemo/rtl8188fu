@@ -6,6 +6,20 @@ Unofficial drivers for RTL8188FU (WiFi dongle) for Linux kernel 4.15.x and newer
 
 **ARM devices are not supported because I don't have one any.**
 
+## Disclaimer
+I'm not a driver developer. I don't have enough knowledge on how to use or fix these things below:
+
+    - RTL8188FU
+
+    - Linux driver headers
+
+    - DKMS stuff
+
+I'm creating this repository to have patches from kelebek333's original repository.
+
+If you have issues with this driver (I might not fix) or suggest a feature, please
+contact kelebek for assistance.
+
 ## Support
 No support will be provided for other Linux distributions other than Arch Linux (I'm currently running on) and Debian (including derivatives).
 

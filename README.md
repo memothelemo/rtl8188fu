@@ -2,7 +2,7 @@
 
 Unofficial drivers for RTL8188FU (WiFi dongle) for Linux kernel 4.15.x and newer.
 
-**It is forked from kelebek333's RTL8188FU repository after it failed to compile on newer versions of Linux (>5.19.2).**
+**It is forked from kelebek333's RTL8188FU repository after it failed to compile on newer versions of Linux (>5.19.2 and >6.0.0).**
 
 **ARM devices are not supported because I don't have one any.**
 

@@ -1,5 +1,9 @@
 # Realtek RTL8188FU Driver
 
+**NOTE (from [kelebek333](https://github.com/kelebek333/rtl8188fu))**
+This repository will may be deprecated as RTL8188FU module supports natively on Linux kernel.
+https://patchwork.kernel.org/project/linux-wireless/patch/b14f299d-3248-98fe-eee1-ba50d2e76c74@gmail.com/
+
 Unofficial drivers for RTL8188FU (WiFi dongle) for Linux kernel 4.15.x and newer.
 
 **It is forked from kelebek333's RTL8188FU repository after it failed to compile on newer versions of Linux (>5.19.2 and >6.0.0).**
